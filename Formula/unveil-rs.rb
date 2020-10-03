@@ -1,36 +1,27 @@
-# Documentation: https://docs.brew.sh/Formula-Cookbook
-#                https://rubydoc.brew.sh/Formula
-# PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
 class UnveilRs < Formula
-  desc ""
-  homepage ""
-  url "unveil-rs"
-  version ""
-  sha256 ""
-  license ""
+  desc "Unveil Rs is a tool to create presentations from markdown inspired by reveal.js, mdbook and zola"
+  homepage "https://oknozor.github.io/unveil-rs/"
+  version "0.1.2-alpha1"
+  license "MIT"
+  bottle :unneeded
 
-  # depends_on "cmake" => :build
+  if OS.mac?
+    url "https://github.com/oknozor/unveil-rs/releases/download/0.1.2-alpha1/unveil-0.1.2-alpha1-x86_64-apple-darwin.tar.gz"
+    sha256 "4cbf7bdc4df06bef3e16bafbd15e0fdc25b1c907a5ee4edf37f8d2a8d3d57b24"
+  elsif OS.linux?
+    if Hardware::CPU.intel?
+      url "https://github.com/oknozor/unveil-rs/releases/download/0.1.2-alpha1/unveil-0.1.2-alpha1-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "271a12d7442a65f60750a330f78d5daef8e8c42003d5f28fffd9b88e53f90876"
+    end
+  end
 
   def install
-    # ENV.deparallelize  # if your formula fails when building in parallel
-    # Remove unrecognized options if warned by configure
-    system "./configure", "--disable-debug",
-                          "--disable-dependency-tracking",
-                          "--disable-silent-rules",
-                          "--prefix=#{prefix}"
-    # system "cmake", ".", *std_cmake_args
+    bin.install "unveil"
   end
 
   test do
-    # `test do` will create, run in and delete a temporary directory.
-    #
-    # This test will fail and we won't accept that! For Homebrew/homebrew-core
-    # this will need to be a test that verifies the functionality of the
-    # software. Run the test with `brew test unveil-rs`. Options passed
-    # to `brew install` such as `--HEAD` also need to be provided to `brew test`.
-    #
-    # The installed folder is not in the path, so use the entire path to any
-    # executables being tested: `system "#{bin}/program", "do", "something"`.
-    system "false"
+    system bin/"unveil", "init", "test"
+    assert_predicate testpath/"test/unveil.toml", :exist?
+    assert_predicate testpath/"test/slides/landig.md", :exist?
   end
 end
